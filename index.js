@@ -26,7 +26,24 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    // Send a ping to confirm a successful connection
+
+    const craftCollection = client.db('craftART').collection('craft');
+
+    app.get('/craft', async (req, res) => {
+      const cursor = craftCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.post('/craft', async (req, res) => {
+      const newCraft = req.body;
+      console.log(newCraft)
+      const result = await craftCollection.insertOne(newCraft);
+      res.send(result);
+    })
+
+
+    // Send a ping to confirm a Successful Connection
     await client.db('admin').command({ ping: 1 });
     console.log(
       'Pinged your deployment. You successfully connected to MongoDB!'
@@ -37,6 +54,7 @@ async function run() {
   }
 }
 run().catch(console.dir);
+
 
 
 app.get('/', (req, res) => {
